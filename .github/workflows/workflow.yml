@@ -1,46 +1,87 @@
-name: Your Reusable Workflow
+name: Git Tag From Semver Increment
 
 on:
   workflow_call:
     inputs:
-      example-input:
-        description: An example input
-        type: string
+      semver-increment:
+        description: The semver increment that indicates which release version will be produced.
         required: true
+        type: string
       skip:
         type: boolean
         description: Whether to skip the workflow or not.
         required: false
         default: false
     secrets:
-      example-secret:
-        description: An example secret
-        required: true
+      github-token:
+        description: |
+          The GitHub token utilized to push the tags. Defaults to the GITHUB_TOKEN otherwise.
+        required: false
     outputs:
-      example-output:
-        description: An example output
-        value: ${{ jobs.example-job.outputs.example-output }}
+      tags:
+        description: A JSON array of tags applied to the HEAD commit.
+        value: ${{ jobs.git-tag-semver-from-label.outputs.tags }}
 
-# The set of permissions your workflow needs.
 permissions:
-  pull-requests: read
+  contents: write
+  pull-requests: write
 
-# The concurrency of your workflow.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+env:
+  status-report-action-repository: infrastructure-blocks/git-tag-from-semver-increment-workflow
 
 jobs:
-  example-job:
-    if: ${{ !inputs.skip }}
+  git-tag-from-semver-increment:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      pull-requests: write
     outputs:
-      example-output: ${{ steps.example-step.outputs.example-output }}
+      tags: ${{ steps.git-tag.outputs.tags }}
     steps:
-      - name: Example step
-        id: example-step
-        env:
-          BIG_SECRET: ${{ secrets.example-secret }}
+      - if: ${{ !inputs.skip }}
+        id: variables
         run: |
-          echo "your input: ${{ inputs.example-input }}"
-          echo "example-output=toto" >> "${GITHUB_OUTPUT}"
+          if test "${{ runner.debug }}" = "1"; then
+            set -x
+          fi
+          
+          if test -n "${{ secrets.github-token }}"; then
+            echo "token=${{ secrets.github-token }}" >> "${GITHUB_OUTPUT}"
+          else
+            echo "token=${{ github.token }}" >> "${GITHUB_OUTPUT}"
+          fi
+          
+          # Take the head SHA from a pull request event, github.sha otherwise.
+          event_pull_request=$(cat "${GITHUB_EVENT_PATH}" | jq '.pull_request' -c)
+          if test -n "${event_pull_request}" && test "${event_pull_request}" != "null"; then
+            sha=$(echo "${event_pull_request}" | jq -r '.head.sha')
+            echo "sha=${sha}" >> ${GITHUB_OUTPUT}
+          else
+            echo "sha=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
+          fi
+      - if: ${{ !inputs.skip }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{  steps.variables.outputs.sha }}
+          token: ${{ steps.variables.outputs.token }}
+      - if: ${{ !inputs.skip }}
+        id: git-tag
+        uses: infrastructure-blocks/git-tag-semver-action@v1
+        with:
+          version: ${{ inputs.semver-increment }}
+      - if: ${{ !inputs.skip }}
+        uses: infrastructure-blocks/status-report-action@v1
+        with:
+          issue-number: ${{ steps.get-current-pr.outputs.number }}
+          body: |
+            :rocket: **Success**: Commit ${{ steps.variables.outputs.sha }} tagged!
+            Tags:
+              - [${{ fromJson(steps.git-tag.outputs.tags)[0] }}](https://github.com/${{ github.repository }}/releases/tag/${{ fromJson(steps.git-tag.outputs.tags)[0] }})
+              - [${{ fromJson(steps.git-tag.outputs.tags)[1] }}](https://github.com/${{ github.repository }}/releases/tag/${{ fromJson(steps.git-tag.outputs.tags)[1] }})
+              - [${{ fromJson(steps.git-tag.outputs.tags)[2] }}](https://github.com/${{ github.repository }}/releases/tag/${{ fromJson(steps.git-tag.outputs.tags)[2] }})
+      - if: ${{ failure() && !inputs.skip }}
+        uses: infrastructure-blocks/status-report-action@v1
+        with:
+          issue-number: ${{ steps.get-current-pr.outputs.number }}
+          body: |
+            :boom: **Error**: Tagging sha ${{ steps.variables.outputs.sha }} with version bump `${{ inputs.semver-increment }}`
