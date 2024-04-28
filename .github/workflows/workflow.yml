@@ -1,0 +1,46 @@
+name: Your Reusable Workflow
+
+on:
+  workflow_call:
+    inputs:
+      example-input:
+        description: An example input
+        type: string
+        required: true
+      skip:
+        type: boolean
+        description: Whether to skip the workflow or not.
+        required: false
+        default: false
+    secrets:
+      example-secret:
+        description: An example secret
+        required: true
+    outputs:
+      example-output:
+        description: An example output
+        value: ${{ jobs.example-job.outputs.example-output }}
+
+# The set of permissions your workflow needs.
+permissions:
+  pull-requests: read
+
+# The concurrency of your workflow.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  example-job:
+    if: ${{ !inputs.skip }}
+    runs-on: ubuntu-22.04
+    outputs:
+      example-output: ${{ steps.example-step.outputs.example-output }}
+    steps:
+      - name: Example step
+        id: example-step
+        env:
+          BIG_SECRET: ${{ secrets.example-secret }}
+        run: |
+          echo "your input: ${{ inputs.example-input }}"
+          echo "example-output=toto" >> "${GITHUB_OUTPUT}"
