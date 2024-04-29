@@ -62,9 +62,9 @@ jobs:
   check-has-semver-label:
     permissions:
       pull-requests: write
-    uses: infrastructure-blocks/check-has-semver-label-workflow/.github/workflows/workflow.yml@v1
+    uses: infrastructure-blocks/check-has-semver-label-workflow/.github/workflows/workflow.yml@v2
   git-tag-from-semver-increment:
-    uses: infrastructure-blocks/git-tag-semver-from-label-workflow/.github/workflows/workflow.yml@v2
+    uses: infrastructure-blocks/git-tag-semver-from-label-workflow/.github/workflows/workflow.yml@v1
     permissions:
       contents: write
       pull-requests: write
