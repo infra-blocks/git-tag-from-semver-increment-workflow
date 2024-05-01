@@ -30,7 +30,11 @@ env:
   status-report-action-repository: infrastructure-blocks/git-tag-from-semver-increment-workflow
 
 jobs:
+<<<<<<< HEAD
   git-tag-from-semver-increment:
+=======
+  example-job:
+>>>>>>> template/master
     runs-on: ubuntu-22.04
     permissions:
       contents: write
@@ -38,8 +42,17 @@ jobs:
     outputs:
       tags: ${{ steps.git-tag.outputs.tags }}
     steps:
+<<<<<<< HEAD
       - if: ${{ !inputs.skip }}
         id: variables
+=======
+      # This condition should be on every step.
+      - if: ${{ !inputs.skip }}
+        id: example-step
+        name: Example step
+        env:
+          BIG_SECRET: ${{ secrets.example-secret }}
+>>>>>>> template/master
         run: |
           if test "${{ runner.debug }}" = "1"; then
             set -x
