@@ -1,13 +1,9 @@
-name: PR Checks
+name: Release
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - labeled
-      - unlabeled
+  push:
+    branches:
+      - master
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -18,14 +14,15 @@ jobs:
     permissions:
       pull-requests: write
     uses: infrastructure-blocks/check-has-semver-label-workflow/.github/workflows/workflow.yml@v2
-  check-has-changelog-version-matching-semver-increment:
+  git-tag-from-semver-increment:
     needs:
       - check-has-semver-label
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
-    uses: infrastructure-blocks/check-has-changelog-version-matching-semver-increment-workflow/.github/workflows/workflow.yml@v1
+    uses: infrastructure-blocks/git-tag-from-semver-increment-workflow/.github/workflows/workflow.yml@v1
     with:
       semver-increment: ${{ needs.check-has-semver-label.outputs.matched-label }}
-      package-type: git
       skip: ${{ needs.check-has-semver-label.outputs.matched-label == 'no version' }}
+    secrets:
+      github-token: ${{ secrets.PAT }}
