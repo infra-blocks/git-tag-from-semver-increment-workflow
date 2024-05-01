@@ -1,4 +1,4 @@
-name: Git Tag Semver From Label
+name: Release
 
 on:
   push:
