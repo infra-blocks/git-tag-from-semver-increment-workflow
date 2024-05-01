@@ -1,5 +1,5 @@
 # git-tag-from-semver-increment-workflow
-[![Git Tag Semver From Label](https://github.com/infrastructure-blocks/git-tag-from-semver-increment-workflow/actions/workflows/git-tag-semver-from-label.yml/badge.svg)](https://github.com/infrastructure-blocks/git-tag-from-semver-increment-workflow/actions/workflows/git-tag-semver-from-label.yml)
+[![Release](https://github.com/infrastructure-blocks/git-tag-from-semver-increment-workflow/actions/workflows/release.yml/badge.svg)](https://github.com/infrastructure-blocks/git-tag-from-semver-increment-workflow/actions/workflows/release.yml)
 [![Update From Template](https://github.com/infrastructure-blocks/git-tag-from-semver-increment-workflow/actions/workflows/update-from-template.yml/badge.svg)](https://github.com/infrastructure-blocks/git-tag-from-semver-increment-workflow/actions/workflows/update-from-template.yml)
 
 This reusable workflow is meant to be used in conjunction with [check-has-semver-label-workflow](https://github.com/infrastructure-blocks/check-has-semver-label-workflow).
