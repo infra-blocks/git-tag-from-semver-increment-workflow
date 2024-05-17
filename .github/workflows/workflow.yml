@@ -27,7 +27,7 @@ permissions:
   pull-requests: write
 
 env:
-  status-report-action-repository: infrastructure-blocks/git-tag-from-semver-increment-workflow
+  status-report-action-repository: infra-blocks/git-tag-from-semver-increment-workflow
 
 jobs:
   git-tag-from-semver-increment:
@@ -66,11 +66,11 @@ jobs:
           token: ${{ steps.variables.outputs.token }}
       - if: ${{ !inputs.skip }}
         id: git-tag
-        uses: infrastructure-blocks/git-tag-semver-action@v1
+        uses: infra-blocks/git-tag-semver-action@v1
         with:
           version: ${{ inputs.semver-increment }}
       - if: ${{ !inputs.skip }}
-        uses: infrastructure-blocks/status-report-action@v1
+        uses: infra-blocks/status-report-action@v1
         with:
           issue-number: ${{ steps.get-current-pr.outputs.number }}
           body: |
@@ -80,7 +80,7 @@ jobs:
               - [${{ fromJson(steps.git-tag.outputs.tags)[1] }}](https://github.com/${{ github.repository }}/releases/tag/${{ fromJson(steps.git-tag.outputs.tags)[1] }})
               - [${{ fromJson(steps.git-tag.outputs.tags)[2] }}](https://github.com/${{ github.repository }}/releases/tag/${{ fromJson(steps.git-tag.outputs.tags)[2] }})
       - if: ${{ failure() && !inputs.skip }}
-        uses: infrastructure-blocks/status-report-action@v1
+        uses: infra-blocks/status-report-action@v1
         with:
           issue-number: ${{ steps.get-current-pr.outputs.number }}
           body: |

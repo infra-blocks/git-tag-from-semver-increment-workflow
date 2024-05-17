@@ -18,5 +18,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release!
 
 
-[1.0.1]: https://github.com/infrastructure-blocks/git-tag-from-semver-increment-workflow/compare/v1.0.0...v1.0.1
-[1.0.0]: https://github.com/infrastructure-blocks/git-tag-from-semver-increment-workflow/releases/tag/v1.0.0
+[1.0.1]: https://github.com/infra-blocks/git-tag-from-semver-increment-workflow/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/infra-blocks/git-tag-from-semver-increment-workflow/releases/tag/v1.0.0
