@@ -1,16 +1,16 @@
 # git-tag-from-semver-increment-workflow
-[![Release](https://github.com/infrastructure-blocks/git-tag-from-semver-increment-workflow/actions/workflows/release.yml/badge.svg)](https://github.com/infrastructure-blocks/git-tag-from-semver-increment-workflow/actions/workflows/release.yml)
-[![Update From Template](https://github.com/infrastructure-blocks/git-tag-from-semver-increment-workflow/actions/workflows/update-from-template.yml/badge.svg)](https://github.com/infrastructure-blocks/git-tag-from-semver-increment-workflow/actions/workflows/update-from-template.yml)
+[![Release](https://github.com/infra-blocks/git-tag-from-semver-increment-workflow/actions/workflows/release.yml/badge.svg)](https://github.com/infra-blocks/git-tag-from-semver-increment-workflow/actions/workflows/release.yml)
+[![Update From Template](https://github.com/infra-blocks/git-tag-from-semver-increment-workflow/actions/workflows/update-from-template.yml/badge.svg)](https://github.com/infra-blocks/git-tag-from-semver-increment-workflow/actions/workflows/update-from-template.yml)
 
-This reusable workflow is meant to be used in conjunction with [check-has-semver-label-workflow](https://github.com/infrastructure-blocks/check-has-semver-label-workflow).
-It leverages the [git-tag-semver-action](https://github.com/infrastructure-blocks/git-tag-semver-action) to manage a set of semantic versioning tags. The latter will update the
+This reusable workflow is meant to be used in conjunction with [check-has-semver-label-workflow](https://github.com/infra-blocks/check-has-semver-label-workflow).
+It leverages the [git-tag-semver-action](https://github.com/infra-blocks/git-tag-semver-action) to manage a set of semantic versioning tags. The latter will update the
 tag by creating a new version based on the semver increment provided and update the tags accordingly. Read the action
 documentation for more information.
 
 Which commit is being tagged depends on the event source. If the event has a `pull_request` payload, then the commit
 used is `pull_request.head.sha`. Otherwise, it uses `github.sha`.
 
-Details are reported as a [status report](https://github.com/infrastructure-blocks/status-report-action) at the end of the workflow.
+Details are reported as a [status report](https://github.com/infra-blocks/status-report-action) at the end of the workflow.
 
 ## Inputs
 
@@ -62,9 +62,9 @@ jobs:
   check-has-semver-label:
     permissions:
       pull-requests: write
-    uses: infrastructure-blocks/check-has-semver-label-workflow/.github/workflows/workflow.yml@v2
+    uses: infra-blocks/check-has-semver-label-workflow/.github/workflows/workflow.yml@v2
   git-tag-from-semver-increment:
-    uses: infrastructure-blocks/git-tag-semver-from-label-workflow/.github/workflows/workflow.yml@v1
+    uses: infra-blocks/git-tag-semver-from-label-workflow/.github/workflows/workflow.yml@v1
     permissions:
       contents: write
       pull-requests: write
@@ -77,4 +77,4 @@ jobs:
 ### Releasing
 
 The releasing is handled at git level with semantic versioning tags. Those are automatically generated and managed
-by the [git-tag-semver-from-label-workflow](https://github.com/infrastructure-blocks/git-tag-semver-from-label-workflow).
+by the [git-tag-semver-from-label-workflow](https://github.com/infra-blocks/git-tag-semver-from-label-workflow).
